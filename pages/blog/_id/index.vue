@@ -15,13 +15,7 @@ export default {
 	components: { post, comments, newComment },
 	data () {
 		return {
-			post: {
-				id: 1,
-				title: '1 post',
-				descr: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-				content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-				img: 'https://lawnuk.com/wp-content/uploads/2016/08/sprogs-dogs.jpg'
-			},
+			post: {},
 			comments: [
 				{ name: 'Alex', text:'Lorem ipsum dolor sit amet, consectetur' },
 				{ name: 'Artem', text:'Lorem ipsum dolor sit amet, consectetur' }
