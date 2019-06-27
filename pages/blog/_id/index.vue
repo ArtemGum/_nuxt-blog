@@ -16,6 +16,23 @@ import comments from '@/components/Comments/Comments.vue'
 
 export default {
 	components: { post, comments, newComment },
+	head () {
+		let title = this.post.title,
+				descr = this.post.descr,
+				img = `${this.post.img}`,
+				type ='site'
+
+		return {
+			title: title,
+			meta: [
+				{ hid: 'og:title', name: 'og:title', content: title },
+				{ hid: 'description', name: 'description', content: descr },
+				{ hid: 'og:description', name: 'og:description', content: descr },
+				{ hid: 'og:type', name: 'og:type', content: type },
+				{ hid: 'og:img', name: 'og:img', content: img }
+			]
+		}
+	},
 	async asyncData (context) {
 		let [post, comments] = await Promise.all([
 			axios.get(`https://blog-nuxt-9b0a0.firebaseio.com/posts/${context.params.id}.json`),
@@ -41,15 +58,6 @@ export default {
 			comments: commentsArrayRes
 		}
 	}
-	// data () {
-	// 	return {
-	// 		post: {},
-	// 		comments: [
-	// 			{ name: 'Alex', text:'Lorem ipsum dolor sit amet, consectetur' },
-	// 			{ name: 'Artem', text:'Lorem ipsum dolor sit amet, consectetur' }
-	// 		]
-	// 	}
-	// }
 }
 </script>
 

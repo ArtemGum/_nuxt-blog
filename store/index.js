@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export const state = () => ({
 	postsLoaded: [],
-	commentsLoaded: []
+	token: null
 })
 export const mutations = {
 	setPosts (state, posts) {
@@ -16,10 +16,13 @@ export const mutations = {
 		const postIndex = state.postsLoaded.findIndex(post => post.id === postEdit.id)
 		state.postsLoaded[postIndex] = postEdit
 	},
-	addComment(state, comment) {
-	  console.log(comment)
-	  state.commentsLoaded.push(comment)
+	setToken (state, token) {
+		console.log(token)
+		state.token = token
 	},
+	destroyToken (state) {
+		state.token = null
+	}
 }
 export const actions = {
 	nuxtServerInit ({commit}, contex) {
@@ -34,6 +37,19 @@ export const actions = {
 			})
 			.catch(e => console.log(e))
 	},
+	authUser ({commit}, authData) {
+		const key = 'AIzaSyDxrXIeIAnxu-Kq10kIIAWI0sOzaCii5YE'
+		return axios.post(`https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=${key}`,{
+			email: authData.email,
+			password: authData.password,
+			returnSecureToken: true
+		})
+			.then((res) => {commit('setToken', res.data.idToken)})
+			.catch((e) => console.log(e))
+	},
+	logoutUser ({commit}) {
+		commit('destroyToken')
+	},
 	addPost ({commit}, post) {
 		// console.log(post)
 		return axios.post('https://blog-nuxt-9b0a0.firebaseio.com/posts.json', post)
@@ -43,30 +59,23 @@ export const actions = {
 		})
 		.catch(e => console.log (e))
 	},
-	editPost ({commit}, post) {
-		return axios.put(`https://blog-nuxt-9b0a0.firebaseio.com/posts/${post.id}.json`, post)
+	editPost ({commit, state}, post) {
+		return axios.put(`https://blog-nuxt-9b0a0.firebaseio.com/posts/${post.id}.json?auth=${state.token}`, post)
 		.then(res => {
 			commit('editPost', post)
 		})
 		.catch(e => console.log(e))
 	},
-	addComment({
-	  commit
-	}, comment) {
-	  // console.log(post)
+	addComment(comment) {
 	  return axios.post('https://blog-nuxt-9b0a0.firebaseio.com/comments.json', comment)
-	    .then(res => {
-	      // console.log(res)
-	      commit('addComment', {
-	        ...comment,
-	        id: res.data.name
-	      })
-	    })
 	    .catch(e => console.log(e))
 	},
 }
 export const getters = {
 	getPostsLoaded (state) {
 		return state.postsLoaded
+	},
+	checkAuthUser (state) {
+		return state.token != null
 	}
 }
