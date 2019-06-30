@@ -1,9 +1,10 @@
 <template>
 	<div class="wrapper-content wrapper-content--fixed">
 		<post :post="post" />
-		<comments :comments="comments" />
-		<!-- <p>{{ comments }}</p> -->
-		<newComment :postId="$route.params.id"/>
+		<no-ssr>
+			<comments :comments="comments" />
+			<newComment :postId="$route.params.id"/>
+		</no-ssr>
 	</div>
 </template>
 
